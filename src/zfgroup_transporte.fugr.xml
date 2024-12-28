@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AREAT>Sistema de Gestão de Transportes</AREAT>
+   <INCLUDES>
+    <SOBJ_NAME>LZFGROUP_TRANSPORTETOP</SOBJ_NAME>
+    <SOBJ_NAME>SAPLZFGROUP_TRANSPORTE</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>ZBUILD_DYNAMIC_QUERY</FUNCNAME>
+     <SHORT_TEXT>Criar queries dinâmicas</SHORT_TEXT>
+    </item>
+    <item>
+     <FUNCNAME>ZFCREATE_ID</FUNCNAME>
+     <SHORT_TEXT>Criar ID CHAR - 5 dígitos numéricos</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>CURRENT_ID</PARAMETER>
+       <TYP>CHAR5</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>RESULT_ID</PARAMETER>
+       <TYP>CHAR5</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>CURRENT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Maior ID selecionado na tabela</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RESULT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>ID incrementado +1</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_BUILD_DYNAMIC_QUERY</FUNCNAME>
+     <SHORT_TEXT>Generate dinamic query</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IT_FIELD</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IT_VALUES</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IT_TEMPLATE</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>RV_WHERE_CLAUSE</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IT_FIELD</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IT_VALUES</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IT_TEMPLATE</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RV_WHERE_CLAUSE</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

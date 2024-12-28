@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZMCTRANSPORTES</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Classe de mensagem para programa SAPMZTRANSPORTE</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>Dados salvos com sucesso</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Erro ao salvar dados</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>A placa &amp;1 já possui cadastro, verifique</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>É obrigatório informar o modelo</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>É obrigatório informar a marca</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>É obrigatório informar a capacidade</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>É obrigatório informar o status</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>É obrigatório informar a placa</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>É obrigatório informar o nome</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>É obrigatório informar o número do CPF</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>O CPF &amp;1 já possui cadastro, verifique</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>É obrigatório informar o número da CNH</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>A CNH &amp;1 já possui cadastro, verifique</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>É obrigatório informar a data de validade da CNH</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>É obrigatório informar o país</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>É obrigatório informar o estado (UF) de origem</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>É obrigatório informar o estado (UF) de destino</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>É obrigatório informar a distância</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>018</MSGNR>
+     <TEXT>É obrigatório informar a unidadade de medida</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>019</MSGNR>
+     <TEXT>É obrigatório informar a entrega</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>020</MSGNR>
+     <TEXT>É obrigatório informar a descrição</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>021</MSGNR>
+     <TEXT>É obrigatório informar o veículo</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>022</MSGNR>
+     <TEXT>É obrigatório informar o motorista</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>023</MSGNR>
+     <TEXT>É obrigatório informar a ocorrência</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>024</MSGNR>
+     <TEXT>É obrigatório informar a data prevista</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMCTRANSPORTES</ARBGB>
+     <MSGNR>025</MSGNR>
+     <TEXT>É obrigatório informar a rota</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>
