@@ -14,7 +14,7 @@ PROCESS AFTER INPUT.
       FIELD t_ztrotas_aux-uf_origem.
       FIELD t_ztrotas_aux-uf_destino.
       FIELD t_ztrotas_aux-distancia.
-      FIELD t_ztrotas_aux-unid_medida.
+      FIELD t_ztrotas_aux-meins.
     ENDCHAIN.
     FIELD t_ztrotas_aux-mark MODULE mark_rota ON REQUEST.
   ENDLOOP.
