@@ -94,6 +94,116 @@ START-OF-SELECTION.
 *                          OR ENTREGA_ID = '00016'
 *                          OR ENTREGA_ID = '00017'.
 
-UPDATE ZTENTREGAS
-  SET STATUS = 'FINALIZADA'
-  WHERE STATUS = 'FINALIZAD'.
+*UPDATE ZTENTREGAS
+*  SET STATUS = 'FINALIZADA'
+*  WHERE STATUS = 'FINALIZAD'.
+*
+*UPDATE ztmotoristas
+*  SET status = 'DISPONIVEL'
+*  where status = 'DISPONÍVEL'.
+
+*UPDATE ZTVEICULOS
+*    SET status = 'DISPONIVEL'
+*  where status = 'DISPONÍVEL'.
+*
+*UPDATE ZTROTAS
+*  SET MEINS = 'KM'
+*  WHERE ROTA_ID = '00001'.
+*
+*UPDATE ZTROTAS
+*  SET DISTANCIA = 1111
+*  WHERE ROTA_ID = '00001'.
+*
+*UPDATE ZTROTAS
+*  SET DISTANCIA = 432
+*  WHERE ROTA_ID = '00002'.
+*
+*UPDATE ZTROTAS
+*  SET DISTANCIA = 540
+*  WHERE ROTA_ID = '00003'.
+
+  "DELETE FROM ZTVEICULOS WHERE STATUS = ''.
+*
+*DATA: lv_length TYPE DDLENG.
+*
+*SELECT SINGLE leng
+*  INTO lv_length
+*  FROM dd03l
+*  WHERE tabname = 'ZTROTAS'
+*    AND fieldname = 'DISTANCIA'.
+*
+*IF sy-subrc = 0.
+*  WRITE: / 'Tamanho do campo:', lv_length.
+*ELSE.
+*  WRITE: / 'Campo não encontrado.'.
+*ENDIF.
+
+*data: lv_length type i,
+*      lv_cast type string.
+*
+*  SELECT SINGLE distancia
+*    INTO @DATA(lv_value)
+*    FROM  ztrotas
+*    WHERE rota_id = '00001'.
+*
+*  WRITE:/ lv_value.
+*
+*  lv_cast = lv_value.
+*
+*  lv_length  = strlen( lv_cast ). " 9 com ponto e vírgula
+*  WRITE:/ lv_length.
+*
+*  FREE: lv_cast, lv_length.
+
+**********************************************************************
+
+  TYPES: BEGIN OF ty_rotas.
+    INCLUDE STRUCTURE: ztrotas.
+    TYPES: dist_length TYPE i,
+    END OF ty_rotas.
+
+  DATA: lt_fixed  TYPE TABLE OF ztrotas,
+        wa_fixed  TYPE ztrotas,
+        lt_rotas  TYPE TABLE OF ty_rotas,
+        lv_cast   TYPE string,
+        lv_number TYPE ZEROTA_003.
+
+  TRY .
+      SELECT * FROM ztrotas
+          INTO TABLE lt_rotas
+          WHERE rota_id = '00059'.
+
+      LOOP AT lt_rotas INTO DATA(wa_rotas).
+        lv_cast = wa_rotas-distancia.
+
+        IF strlen( lv_cast ) EQ 9.
+          CONDENSE lv_cast NO-GAPS.
+          REPLACE '.' WITH ',' INTO lv_cast.
+          lv_number = lv_cast.
+          wa_rotas-distancia = lv_number.
+          APPEND wa_rotas TO lt_rotas.
+        ENDIF.
+
+      ENDLOOP.
+    CATCH cx_sy_conversion_no_number.
+
+      MESSAGE: 'CX_SY_CONVERSION_NO_NUMBER' TYPE 'E'.
+  ENDTRY.
+
+
+*    CONDENSE lv_number NO-GAPS.
+*    WRITE: / 'Após CONDENSE:', lv_number.  "Mostra: 1.111
+*
+** Troca ponto por vírgula
+*    REPLACE '.' WITH ',' INTO lv_number.
+
+*  lt_fixed = VALUE #(
+*    FOR ls_rotas IN lt_rotas WHERE
+*      LET lv_length = strlen( distancia ) IN
+
+*    (
+*      ls_rotas-rota_id = rota_id
+*      ls_rotas-distancia = distancia
+*    )
+
+  ").

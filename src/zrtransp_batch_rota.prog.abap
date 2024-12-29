@@ -1,32 +1,29 @@
 *&---------------------------------------------------------------------*
-*& Report ZRTRANSP_BATCH_VEICULO
+*& Report ZRTRANSP_BATCH_ROTA
 *&---------------------------------------------------------------------*
 *& Carga Batch Input para dados de cadastro de veículo em massa
-*&  - Tabela: ZTVEICULOS
+*&  - Tabela: ZTROTAS
+*&  - Transaction: ZMTROTA
 *&  - Programa: SAPMZTRANSPORTE
-*&  - Transaction: ZMTVEICULO
-*&  - Mapeamento BDC: CAD_VEICULO
+*&  - Mapeamento BDC: CAD_ROTA
 *&---------------------------------------------------------------------*
 
-REPORT zrtransp_batch_veiculo NO STANDARD PAGE HEADING.
+REPORT zrtransp_batch_rota NO STANDARD PAGE HEADING.
 
-" Para salvar dados do arquivo CSV em linha
+" Tipos
 TYPES: BEGIN OF ty_csv,
          line(100) TYPE c,
        END OF ty_csv.
 
-" Formatar de uma linha para os campos correspondentes
 TYPES: BEGIN OF ty_format_file,
-         veiculo_id     TYPE ztveiculos-veiculo_id,
-         placa          TYPE ztveiculos-placa,
-         modelo         TYPE ztveiculos-modelo,
-         marca          TYPE ztveiculos-marca,
-         capacidade(13) TYPE c,                   " Original type = quan
-         meins          TYPE ztveiculos-meins,
-         status         TYPE ztveiculos-status,
+         rota_id(5)    TYPE c,  " CHAR5
+         pais(3)       TYPE c,  " LAND1
+         uf_origem(3)  TYPE c,  " REGIO
+         uf_destino(3) TYPE c,  " REGIO
+         distancia(13) TYPE c,  " QUAN
+         meins(3)      TYPE c,  " UNIT
        END OF ty_format_file.
 
-" lt_format_file para salvar os dados formatados
 " Tabelas
 DATA: lt_format_file TYPE TABLE OF ty_format_file,
       lt_csv         TYPE TABLE OF ty_csv,
@@ -45,7 +42,6 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_file.
 
 START-OF-SELECTION.
   PERFORM f_upload_file.
-  "PERFORM f_print_data.
   PERFORM f_create_bdc.
 
 *&---------------------------------------------------------------------*
@@ -114,13 +110,12 @@ FORM f_upload_file .
       IF sy-subrc IS INITIAL.
         " Formatando dados
         LOOP AT lt_csv INTO wa_csv.
-          SPLIT wa_csv AT ';' INTO wa_format_file-veiculo_id
-                                   wa_format_file-placa
-                                   wa_format_file-modelo
-                                   wa_format_file-marca
-                                   wa_format_file-capacidade
-                                   wa_format_file-meins
-                                   wa_format_file-status.
+          SPLIT wa_csv AT ';' INTO wa_format_file-rota_id
+                                   wa_format_file-pais
+                                   wa_format_file-uf_origem
+                                   wa_format_file-uf_destino
+                                   wa_format_file-distancia
+                                   wa_format_file-meins.
 
           APPEND wa_format_file TO lt_format_file.
 
@@ -154,23 +149,23 @@ FORM f_create_bdc .
 
   LOOP AT lt_format_file INTO wa_format_file.
 
-    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0011'.
-    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTVEICULOS-PLACA(01)'.
+    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0013'.
+    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTROTAS-PAIS(01)'.
     PERFORM f_mount_data   USING 'BDC_OKCODE'           '=NEWL'.
 
-    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0012'.
-    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTVEICULOS-STATUS'.
+    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0014'.
+    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTROTAS-MEINS'.
     PERFORM f_mount_data   USING 'BDC_OKCODE'           '=SAVE'.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-VEICULO_ID' wa_format_file-veiculo_id.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-PLACA'      wa_format_file-placa.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-MODELO'     wa_format_file-modelo.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-MARCA'      wa_format_file-marca.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-CAPACIDADE' wa_format_file-capacidade.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-MEINS'      wa_format_file-meins.
-    PERFORM f_mount_data   USING 'ZTVEICULOS-STATUS'     wa_format_file-status.
+    PERFORM f_mount_data   USING 'ZTROTAS-ROTA_ID'    wa_format_file-rota_id.
+    PERFORM f_mount_data   USING 'ZTROTAS-PAIS'       wa_format_file-pais.
+    PERFORM f_mount_data   USING 'ZTROTAS-UF_ORIGEM'  wa_format_file-uf_origem.
+    PERFORM f_mount_data   USING 'ZTROTAS-UF_DESTINO' wa_format_file-uf_destino.
+    PERFORM f_mount_data   USING 'ZTROTAS-DISTANCIA'  wa_format_file-distancia.
+    PERFORM f_mount_data   USING 'ZTROTAS-MEINS'      wa_format_file-meins.
 
-    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0012'.
-    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTVEICULOS-PLACA'.
+
+    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0014'.
+    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTROTAS-PAIS'.
     PERFORM f_mount_data   USING 'BDC_OKCODE'           '=ENDE'.
 
     PERFORM f_insert_bdc.
@@ -192,9 +187,9 @@ FORM f_open_folder .
       CALL FUNCTION 'BDC_OPEN_GROUP'
         EXPORTING
           client              = sy-mandt
-          group               = 'CARGA_VEIC'   " Nome da pasta
-          keep                = 'X'            " Manter histórico
-          user                = sy-uname       " User
+          group               = 'CARGA_ROTA'   " Nome da pasta
+          keep                = 'X'             " Manter histórico
+          user                = sy-uname        " User
         EXCEPTIONS
           client_invalid      = 1
           destination_invalid = 2
@@ -260,7 +255,7 @@ FORM f_insert_bdc .
   TRY .
       CALL FUNCTION 'BDC_INSERT'
         EXPORTING
-          tcode            = 'ZMTVEICULO'  " Código da transaction
+          tcode            = 'ZMTROTA'  " Código da transaction
         TABLES
           dynprotab        = lt_bdcdata    " Tabela BDC
         EXCEPTIONS

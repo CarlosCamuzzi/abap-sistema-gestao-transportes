@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <PROGDIR>
-    <NAME>ZRTRANSP_BATCH_MOTORISTA</NAME>
+    <NAME>ZRTRANSP_BATCH_ROTA</NAME>
     <SUBC>1</SUBC>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
@@ -12,8 +12,8 @@
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>Carga Batch Input Cadastro de Motoristas - SAPMZTRANSPORTE</ENTRY>
-     <LENGTH>58</LENGTH>
+     <ENTRY> Carga Batch Input Cadastro de Rotas - SAPMZTRANSPORTE</ENTRY>
+     <LENGTH>54</LENGTH>
     </item>
     <item>
      <ID>S</ID>

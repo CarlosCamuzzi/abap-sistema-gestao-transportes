@@ -772,13 +772,9 @@ FORM validate_rota_inputs  CHANGING p_v_input.
       WHEN 2.
         PERFORM validate_rota_uf_origem CHANGING p_v_input.
       WHEN 3.
-        PERFORM validate_motorista_cnh CHANGING p_v_input.
-      WHEN 4.
         PERFORM validate_rota_uf_destino CHANGING p_v_input.
-      WHEN 5.
+      WHEN 4.
         PERFORM validate_rota_distancia CHANGING p_v_input.
-      WHEN 6.
-        PERFORM validate_rota_unid_medida CHANGING p_v_input.
       WHEN OTHERS.
         EXIT.
     ENDCASE.
@@ -826,16 +822,6 @@ FORM validate_rota_distancia CHANGING p_v_input.
   IF w_ztrotas-distancia IS INITIAL.
     p_v_input = abap_true.
     MESSAGE i017.   " É obrigatório informar a distância
-  ENDIF.
-ENDFORM.
-
-*&---------------------------------------------------------------------*
-*&      Form  VALIDATE_ROTA_UNID_MEDIDA
-*&---------------------------------------------------------------------*
-FORM validate_rota_unid_medida CHANGING p_v_input.
-  IF w_ztrotas-pais EQ space.
-    p_v_input = abap_true.
-    MESSAGE i018.   " É obrigatório informar a unidadade de medida
   ENDIF.
 ENDFORM.
 
