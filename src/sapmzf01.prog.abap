@@ -499,7 +499,7 @@ FORM f_save_data_ocorrencia .
     " Atualizar ocorrência_id na tabela de entregas
     UPDATE ztentregas
       SET ocorrencia_id = w_ztocorrencias-ocorrencia_id
-      WHERE entrega_id = w_ztocorrencias-entrega_id.
+      WHERE entrega_id = t_busca_entrega-ocorrencia_id.
 
     IF sy-subrc IS INITIAL.
       COMMIT WORK.
@@ -856,8 +856,10 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 *& Form validate_ocorrencia_entrega_id
 *&---------------------------------------------------------------------*
+" Valida pela tabela de busca, pois não tem entrega-id em ztocorrencias
+*&---------------------------------------------------------------------*
 FORM validate_ocorrencia_entrega_id  CHANGING p_v_input.
-  IF w_ztocorrencias-entrega_id IS INITIAL.
+  IF t_busca_entrega-entrega_id IS INITIAL.
     p_v_input = abap_true.
     MESSAGE i019.   " É obrigatório informar a entrega
   ENDIF.

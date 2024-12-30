@@ -18,7 +18,7 @@ DATA:  BEGIN OF STATUS_ZTOCORRENCIAS                 .   "state vector
          INCLUDE STRUCTURE VIMSTATUS.
 DATA:  END OF STATUS_ZTOCORRENCIAS                 .
 CONTROLS: TCTRL_ZTOCORRENCIAS
-            TYPE TABLEVIEW USING SCREEN '0007'.
+            TYPE TABLEVIEW USING SCREEN '0003'.
 *...processing: ZTROTAS.........................................*
 DATA:  BEGIN OF STATUS_ZTROTAS                       .   "state vector
          INCLUDE STRUCTURE VIMSTATUS.

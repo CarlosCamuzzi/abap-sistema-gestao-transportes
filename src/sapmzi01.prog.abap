@@ -310,7 +310,7 @@ MODULE user_command_0501 INPUT.
       LEAVE TO SCREEN '0500'.
 
     WHEN 'FCT_SELECT_ENTR'.
-      CALL SCREEN '0502' STARTING AT 20 2 ENDING AT 148 20.
+      CALL SCREEN '0502' STARTING AT 20 2 ENDING AT 155 20.
 
     WHEN OTHERS.
   ENDCASE.
@@ -345,11 +345,7 @@ MODULE user_command_0502 INPUT.
 
     WHEN 'FCT_ADD'.
       READ TABLE t_busca_entrega WITH KEY mark = 'X'.
-
-      IF sy-subrc IS INITIAL.
-        w_ztocorrencias-entrega_id = t_busca_entrega-entrega_id.
-        CALL SCREEN '0501'.
-      ENDIF.
+      CALL SCREEN '0501'.
 
     WHEN OTHERS.
   ENDCASE.
