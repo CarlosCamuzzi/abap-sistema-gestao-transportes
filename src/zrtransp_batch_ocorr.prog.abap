@@ -1,14 +1,14 @@
 *&---------------------------------------------------------------------*
-*& Report ZRTRANSP_BATCH_ROTA
+*& Report ZRTRANSP_BATCH_OCORR
 *&---------------------------------------------------------------------*
-*& Carga Batch Input para dados de cadastro de veículo em massa
-*&  - Tabela: ZTENTREGAS
-*&  - Transaction: ZMTENTREGA
+*& Carga Batch Input para dados de cadastro de ocorrências em massa
+*&  - Tabela: ZTOCORRENCIAS
+*&  - Transaction: ZMTOCORRENCIA
 *&  - Programa: SAPMZTRANSPORTE
-*&  - Mapeamento BDC: CAD_ENTR
+*&  - Mapeamento BDC: CAD_OCOR
 *&---------------------------------------------------------------------*
 
-REPORT zrtransp_batch_entrega NO STANDARD PAGE HEADING.
+REPORT zrtransp_batch_ocorr NO STANDARD PAGE HEADING.
 
 " Tipos
 TYPES: BEGIN OF ty_csv,
@@ -16,12 +16,10 @@ TYPES: BEGIN OF ty_csv,
        END OF ty_csv.
 
 TYPES: BEGIN OF ty_format_file,
-         entrega_id       TYPE ztentregas-entrega_id,
-         veiculo_id       TYPE ztentregas-veiculo_id,
-         rota_id          TYPE ztentregas-rota_id,
-         motorista_id     TYPE ztentregas-motorista_id,
-         data_entrega(10) TYPE c,
-         status           TYPE ztentregas-status,
+         ocorrencia_id       TYPE ztocorrencias-ocorrencia_id,
+         entrega_id          TYPE ztocorrencias-entrega_id,
+         data_ocorrencia(10) TYPE c,
+         descricao           TYPE ztocorrencias-descricao,
        END OF ty_format_file.
 
 " Tabelas
@@ -110,12 +108,10 @@ FORM f_upload_file .
       IF sy-subrc IS INITIAL.
         " Formatando dados
         LOOP AT lt_csv INTO wa_csv.
-          SPLIT wa_csv AT ';' INTO wa_format_file-entrega_id
-                                   wa_format_file-veiculo_id
-                                   wa_format_file-rota_id
-                                   wa_format_file-motorista_id
-                                   wa_format_file-data_entrega
-                                   wa_format_file-status.
+          SPLIT wa_csv AT ';' INTO wa_format_file-ocorrencia_id
+                                   wa_format_file-entrega_id
+                                   wa_format_file-data_ocorrencia
+                                   wa_format_file-descricao.
 
           APPEND wa_format_file TO lt_format_file.
 
@@ -149,22 +145,20 @@ FORM f_create_bdc .
 
   LOOP AT lt_format_file INTO wa_format_file.
 
-    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0001'.
-    PERFORM f_mount_data   USING 'BDC_CURSOR'           'VIM_POSITION_INFO'.
+    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0007'.
+    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTOCORRENCIAS-ENTREGA_ID(01)'.
     PERFORM f_mount_data   USING 'BDC_OKCODE'           '=NEWL'.
 
-    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0002'.
-    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTENTREGAS-STATUS'.
+    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0008'.
+    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTOCORRENCIAS-DESCRICAO'.
     PERFORM f_mount_data   USING 'BDC_OKCODE'           '=SAVE'.
-    PERFORM f_mount_data   USING 'ZTENTREGAS-ENTREGA_ID'   wa_format_file-entrega_id.
-    PERFORM f_mount_data   USING 'ZTENTREGAS-VEICULO_ID'   wa_format_file-veiculo_id.
-    PERFORM f_mount_data   USING 'ZTENTREGAS-ROTA_ID'      wa_format_file-rota_id.
-    PERFORM f_mount_data   USING 'ZTENTREGAS-MOTORISTA_ID' wa_format_file-motorista_id.
-    PERFORM f_mount_data   USING 'ZTENTREGAS-DATA_ENTREGA' wa_format_file-data_entrega.
-    PERFORM f_mount_data   USING 'ZTENTREGAS-STATUS'       wa_format_file-status.
+    PERFORM f_mount_data   USING 'ZTOCORRENCIAS-OCORRENCIA_ID'   wa_format_file-ocorrencia_id.
+    PERFORM f_mount_data   USING 'ZTOCORRENCIAS-ENTREGA_ID'      wa_format_file-entrega_id.
+    PERFORM f_mount_data   USING 'ZTOCORRENCIAS-DATA_OCORRENCIA' wa_format_file-data_ocorrencia.
+    PERFORM f_mount_data   USING 'ZTOCORRENCIAS-DESCRICAO'      wa_format_file-descricao.
 
-    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0002'.
-    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTENTREGAS-VEICULO_ID'.
+    PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0008'.
+    PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTOCORRENCIAS-ENTREGA_ID'.
     PERFORM f_mount_data   USING 'BDC_OKCODE'           '=ENDE'.
 
     PERFORM f_insert_bdc.
@@ -186,7 +180,7 @@ FORM f_open_folder .
       CALL FUNCTION 'BDC_OPEN_GROUP'
         EXPORTING
           client              = sy-mandt
-          group               = 'CARGA_ENTR'   " Nome da pasta
+          group               = 'CARGA_OCOR'   " Nome da pasta
           keep                = 'X'             " Manter histórico
           user                = sy-uname        " User
         EXCEPTIONS
@@ -253,7 +247,7 @@ FORM f_insert_bdc .
   TRY .
       CALL FUNCTION 'BDC_INSERT'
         EXPORTING
-          tcode            = 'ZMTENTREGA'  " Código da transaction
+          tcode            = 'ZMTOCORRENCIA'  " Código da transaction
         TABLES
           dynprotab        = lt_bdcdata    " Tabela BDC
         EXCEPTIONS

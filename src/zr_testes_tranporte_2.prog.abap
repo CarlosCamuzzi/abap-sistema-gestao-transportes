@@ -213,19 +213,5 @@ REPORT zr_testes_tranporte_2.
 **********************************************************************
 
 START-OF-SELECTION.
-"delete from ztrotas.
-"DELETE FROM ZTOCORRENCIAS.
-DELETE FROM ZTENTREGAS.
-
-"INSERT INTO demo_expressions VALUES @( VALUE #( id = 'X' num1 = 111 ) ).
-*INSERT INTO ZTOCORRENCIAS VALUES @( VALUE #( ocorrencia_id = '00000'
-*                                             data_ocorrencia = '00.00.00' descricao =
-*                                             'Sem Ocorrência' ) ).
-
-*UPDATE ZTOCORRENCIAS
-*  SET data_ocorrencia = ''
-*  ocorrencia_id = '00000'.
-*
-*UPDATE ZTOCORRENCIAS
-*  SET descricao = 'SEM OCORRENCIA'
-*  ocorrencia_id = '00000'.
+delete from ztentregas.
+"delete from ztocorrencias.

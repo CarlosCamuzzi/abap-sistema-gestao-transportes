@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <PROGDIR>
-    <NAME>ZRTRANSP_BATCH_ENTREGA</NAME>
+    <NAME>ZRTRANSP_BATCH_OCORR</NAME>
     <SUBC>1</SUBC>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
@@ -12,8 +12,8 @@
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>Carga Batch Input Cadastro de Entregas - SAPMZTRANSPORTE</ENTRY>
-     <LENGTH>56</LENGTH>
+     <ENTRY>Carga Batch Input para dados de cadastro de ocorrências em massa</ENTRY>
+     <LENGTH>64</LENGTH>
     </item>
     <item>
      <ID>S</ID>

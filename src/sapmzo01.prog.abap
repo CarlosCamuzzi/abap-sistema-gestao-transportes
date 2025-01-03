@@ -176,6 +176,7 @@ MODULE status_0500 OUTPUT.
 
   FREE: w_ztocorrencias,
         w_ztentregas.
+  CLEAR: t_busca_entrega, t_busca_entrega[].
 
 ENDMODULE.
 

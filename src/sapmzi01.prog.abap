@@ -310,7 +310,7 @@ MODULE user_command_0501 INPUT.
       LEAVE TO SCREEN '0500'.
 
     WHEN 'FCT_SELECT_ENTR'.
-      CALL SCREEN '0502' STARTING AT 20 2 ENDING AT 155 20.
+      CALL SCREEN '0502' STARTING AT 20 2 ENDING AT 148 20.
 
     WHEN OTHERS.
   ENDCASE.
@@ -331,21 +331,27 @@ ENDMODULE.
 MODULE user_command_0502 INPUT.
   CASE sy-ucomm.
     WHEN 'FCT_BACK'.
-      FREE: t_busca_entrega, v_nome, v_placa, v_cpf, v_cnh,
+      FREE: v_nome, v_placa, v_cpf, v_cnh,
             v_orige, v_desti, v_pais, v_staten.
+      CLEAR: t_busca_entrega, t_busca_entrega[].
 
       CALL SCREEN '0501'.
 
     WHEN 'FCT_CLEAN'.
       FREE: t_busca_entrega, v_nome, v_placa, v_cpf, v_cnh,
             v_orige, v_desti, v_pais, v_staten.
+      CLEAR: t_busca_entrega, t_busca_entrega[].
 
     WHEN 'FCT_SEARCH'.
       PERFORM f_select_entrega_data.
 
     WHEN 'FCT_ADD'.
       READ TABLE t_busca_entrega WITH KEY mark = 'X'.
-      CALL SCREEN '0501'.
+
+      IF sy-subrc IS INITIAL.
+        w_ztocorrencias-entrega_id = t_busca_entrega-entrega_id.
+        CALL SCREEN '0501'.
+      ENDIF.
 
     WHEN OTHERS.
   ENDCASE.

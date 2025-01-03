@@ -399,14 +399,16 @@ FORM f_select_entrega_data .
         SELECT
           e~entrega_id, m~nome, m~cpf, m~cnh,
           r~pais, r~uf_origem, r~uf_destino,
-          v~placa, e~status, e~ocorrencia_id
+          v~placa, e~status, o~ocorrencia_id
         FROM ztentregas AS e
          INNER JOIN ztmotoristas AS m ON e~motorista_id = m~motorista_id
          INNER JOIN ztveiculos AS v ON e~veiculo_id = v~veiculo_id
          INNER JOIN ztrotas AS r ON e~rota_id = r~rota_id
+         LEFT JOIN ztocorrencias AS o ON e~entrega_id = o~entrega_id
         WHERE (lv_where_clause)
         ORDER BY e~entrega_id
         INTO TABLE @t_busca_entrega.
+
       ENDIF.
 
     CATCH cx_sy_dynamic_osql_syntax.
@@ -497,9 +499,9 @@ FORM f_save_data_ocorrencia .
   IF sy-subrc IS INITIAL.
 
     " Atualizar ocorrência_id na tabela de entregas
-    UPDATE ztentregas
-      SET ocorrencia_id = w_ztocorrencias-ocorrencia_id
-      WHERE entrega_id = t_busca_entrega-ocorrencia_id.
+*    UPDATE ztentregas
+*      SET ocorrencia_id = w_ztocorrencias-ocorrencia_id
+*      WHERE entrega_id = w_ztocorrencias-entrega_id.
 
     IF sy-subrc IS INITIAL.
       COMMIT WORK.
@@ -856,10 +858,8 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 *& Form validate_ocorrencia_entrega_id
 *&---------------------------------------------------------------------*
-" Valida pela tabela de busca, pois não tem entrega-id em ztocorrencias
-*&---------------------------------------------------------------------*
 FORM validate_ocorrencia_entrega_id  CHANGING p_v_input.
-  IF t_busca_entrega-entrega_id IS INITIAL.
+  IF w_ztocorrencias-entrega_id IS INITIAL.
     p_v_input = abap_true.
     MESSAGE i019.   " É obrigatório informar a entrega
   ENDIF.
