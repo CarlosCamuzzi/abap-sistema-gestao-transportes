@@ -155,7 +155,7 @@ FORM f_create_bdc .
     PERFORM f_mount_data   USING 'ZTOCORRENCIAS-OCORRENCIA_ID'   wa_format_file-ocorrencia_id.
     PERFORM f_mount_data   USING 'ZTOCORRENCIAS-ENTREGA_ID'      wa_format_file-entrega_id.
     PERFORM f_mount_data   USING 'ZTOCORRENCIAS-DATA_OCORRENCIA' wa_format_file-data_ocorrencia.
-    PERFORM f_mount_data   USING 'ZTOCORRENCIAS-DESCRICAO'      wa_format_file-descricao.
+    PERFORM f_mount_data   USING 'ZTOCORRENCIAS-DESCRICAO'       wa_format_file-descricao.
 
     PERFORM f_mount_screen USING 'SAPLZGRF_TRANSPORTES' '0008'.
     PERFORM f_mount_data   USING 'BDC_CURSOR'           'ZTOCORRENCIAS-ENTREGA_ID'.

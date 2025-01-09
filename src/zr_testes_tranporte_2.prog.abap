@@ -213,5 +213,5 @@ REPORT zr_testes_tranporte_2.
 **********************************************************************
 
 START-OF-SELECTION.
-delete from ztentregas.
-"delete from ztocorrencias.
+"delete from ztentregas.
+delete from ztocorrencias.

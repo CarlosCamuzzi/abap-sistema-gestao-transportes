@@ -266,6 +266,33 @@
       </RSFDO>
      </DOCUMENTATION>
     </item>
+    <item>
+     <FUNCNAME>ZBUILD_DYNAMIC_QUERY</FUNCNAME>
+     <SHORT_TEXT>Create dynamic query</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IT_TABLE</PARAMETER>
+       <TYP>ZTSTRUCTURE_QUERY</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>QUERY</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IT_TABLE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Type for ZSTRUCTURE_QUERY</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>QUERY</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
    </FUNCTIONS>
    <DYNPROS>
     <item>

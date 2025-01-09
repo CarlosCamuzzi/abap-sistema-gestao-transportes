@@ -52,7 +52,7 @@ MODULE user_command_0200 INPUT.
       CALL SCREEN '0201'.
 
     WHEN 'FCT_VEIC_REL'.
-      "CALL SCREEN '0202'.
+      CALL SCREEN '0202'.
 
     WHEN 'FCT_BACK'.
       LEAVE TO SCREEN '0100'.
@@ -310,7 +310,7 @@ MODULE user_command_0501 INPUT.
       LEAVE TO SCREEN '0500'.
 
     WHEN 'FCT_SELECT_ENTR'.
-      CALL SCREEN '0502' STARTING AT 20 2 ENDING AT 148 20.
+      CALL SCREEN '0502' STARTING AT 20 2 ENDING AT 154 20.
 
     WHEN OTHERS.
   ENDCASE.
@@ -596,4 +596,19 @@ MODULE mark_motorista INPUT.
       MODIFY t_ztmotoristas_aux INDEX sy-tabix TRANSPORTING mark.
     ENDIF.
   ENDIF.
+ENDMODULE.
+
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0202  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0202 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FCT_RELATORIO'.
+      PERFORM f_alv_veic.
+    WHEN 'FCT_BACK'.
+      LEAVE TO SCREEN '0200'.
+    WHEN OTHERS.
+  ENDCASE.
 ENDMODULE.

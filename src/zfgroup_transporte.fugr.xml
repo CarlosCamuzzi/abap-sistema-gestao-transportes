@@ -9,10 +9,6 @@
    </INCLUDES>
    <FUNCTIONS>
     <item>
-     <FUNCNAME>ZBUILD_DYNAMIC_QUERY</FUNCNAME>
-     <SHORT_TEXT>Criar queries dinâmicas</SHORT_TEXT>
-    </item>
-    <item>
      <FUNCNAME>ZFCREATE_ID</FUNCNAME>
      <SHORT_TEXT>Criar ID CHAR - 5 dígitos numéricos</SHORT_TEXT>
      <IMPORT>
@@ -41,43 +37,29 @@
      </DOCUMENTATION>
     </item>
     <item>
-     <FUNCNAME>Z_BUILD_DYNAMIC_QUERY</FUNCNAME>
+     <FUNCNAME>ZPESSOA_CONCAT</FUNCNAME>
      <SHORT_TEXT>Generate dinamic query</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
-       <PARAMETER>IT_FIELD</PARAMETER>
-       <TYP>STRING</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>IT_VALUES</PARAMETER>
-       <TYP>STRING</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>IT_TEMPLATE</PARAMETER>
-       <TYP>STRING</TYP>
+       <PARAMETER>IT_PESSOA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZTTPESSOA_01</TYP>
       </RSIMP>
      </IMPORT>
      <EXPORT>
       <RSEXP>
-       <PARAMETER>RV_WHERE_CLAUSE</PARAMETER>
+       <PARAMETER>LV_CONCAT</PARAMETER>
        <TYP>STRING</TYP>
       </RSEXP>
      </EXPORT>
      <DOCUMENTATION>
       <RSFDO>
-       <PARAMETER>IT_FIELD</PARAMETER>
+       <PARAMETER>IT_PESSOA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Table Type for ZTPESSOA_01</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>IT_VALUES</PARAMETER>
-       <KIND>P</KIND>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>IT_TEMPLATE</PARAMETER>
-       <KIND>P</KIND>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>RV_WHERE_CLAUSE</PARAMETER>
+       <PARAMETER>LV_CONCAT</PARAMETER>
        <KIND>P</KIND>
       </RSFDO>
      </DOCUMENTATION>
