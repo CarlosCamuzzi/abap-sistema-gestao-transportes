@@ -79,20 +79,21 @@ ENDFORM.
 *& Form f_function_create_id
 *&---------------------------------------------------------------------*
 *& Chamando função que gera o ID
+*& Essa função acrescenta zero à esquerda em strings numéricas
 *&---------------------------------------------------------------------*
 FORM f_function_create_id  USING VALUE(p_lv_currid)
                            CHANGING p_lv_newid.
 
   p_lv_currid = p_lv_currid + 1.
-  " Essa função acrescenta zero à esquerda em strings numéricas
-  IF strlen( p_lv_currid ) NE 0.
+
+  IF strlen( p_lv_currid ) NE 0.    " Demais Id's
     CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
       EXPORTING
         input  = p_lv_currid
       IMPORTING
         output = p_lv_newid.
 
-  ELSE.     " Primeiro ID
+  ELSE.                             " Primeiro ID
     p_lv_newid = '00001'.
 
   ENDIF.
@@ -106,44 +107,28 @@ FORM f_select_rota_data .
 
   FREE t_ztrotas_aux.
 
-  DATA: lv_where_clause TYPE string,
-        lv_count        TYPE i VALUE 0,     " Contador para quantidade de AND
-        lv_len          TYPE i VALUE 0.     " Verifica se há alguma string na lv_where_clause
+  DATA: lt_where_clause TYPE TABLE OF zstructure_query, " Structure for function ZBUILD_DYNAMIC_QUERY
+        lv_where_clause TYPE string.
 
-  " Construir a cláusula WHERE dinamicamente
-  IF v_pais IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | pais LIKE '{ v_pais }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+  lt_where_clause = VALUE #(
+    ( clause = | pais LIKE '{ v_pais }%' AND |
+      exist = COND #( WHEN v_pais IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_orige IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | uf_origem LIKE '{ v_orige }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | uf_origem LIKE '{ v_orige }%' AND |
+      exist = COND #( WHEN v_orige IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_desti IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | uf_destino LIKE '{ v_desti }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | uf_destino LIKE '{ v_desti }%' AND |
+      exist = COND #( WHEN v_desti IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
+  ).
 
-  lv_len = strlen( lv_where_clause ) - 1.
-
-  IF lv_len > 0.
-    TRY.
-        " Remover última AND, se existir
-        lv_where_clause = substring_before( val = lv_where_clause  sub = ' AND' occ = lv_count ).
-
-      CATCH cx_sy_range_out_of_bounds.
-        MESSAGE: 'CX_SY_RANGE_OUT_OF_BOUNDS' TYPE 'E'.
-
-      CATCH cx_sy_strg_par_val.
-        MESSAGE: 'CX_SY_STRG_PAR_VAL' TYPE 'E'.
-
-      CATCH cx_sy_regex_too_complex.
-        MESSAGE: 'CX_SY_REGEX_TOO_COMPLEX' TYPE 'E'.
-
-    ENDTRY.
-  ENDIF.
+  CALL FUNCTION 'ZBUILD_DYNAMIC_QUERY'
+    EXPORTING
+      it_table = lt_where_clause
+    IMPORTING
+      query    = lv_where_clause.
 
   TRY.
       IF lv_where_clause IS NOT INITIAL. " Query dinâmica
@@ -161,6 +146,9 @@ FORM f_select_rota_data .
 
     CATCH cx_sy_dynamic_osql_syntax.
       MESSAGE: 'CX_SY_DYNAMIC_OSQL_SYNTAX' TYPE 'E'.
+
+    CATCH cx_sy_open_sql_db.
+      MESSAGE: 'CX_SY_OPEN_SQL_D' TYPE 'E'.
 
     CATCH cx_sy_dynamic_osql_semantics.
       MESSAGE: 'CX_SY_DYNAMIC_OSQL_SEMANTICS' TYPE 'E'.
@@ -176,64 +164,47 @@ FORM f_select_veiculo_data .
 
   FREE: t_ztveiculos_aux.
 
-  DATA: lv_where_clause TYPE string,
-        lv_count        TYPE i VALUE 0,     " Contador para quantidade de AND
-        lv_len          TYPE i VALUE 0.     " Verifica se há alguma string na lv_where_clause
+  DATA: lt_where_clause TYPE TABLE OF zstructure_query,
+        lv_where_clause TYPE string.
 
-  " Construir a cláusula WHERE dinamicamente
-  IF v_placa IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | placa LIKE '{ v_placa }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+  " Opções da cláusula where
+  lt_where_clause = VALUE #(
+    ( clause = | placa LIKE '{ v_placa }%' AND |
+      exist = COND #( WHEN v_placa IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_marca IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | marca LIKE '{ v_marca }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | marca LIKE '{ v_marca }%' AND |
+      exist = COND #( WHEN v_marca IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_model IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | modelo LIKE '{ v_model }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | modelo LIKE '{ v_model }%' AND |
+      exist = COND #( WHEN v_model IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  " dump aqui - ideal seria um range
-  IF v_capac IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | capacidade LIKE '{ v_capac }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | capacidade = '{ v_capac }' AND |
+      exist = COND #( WHEN v_capac IS INITIAL
+                    THEN abap_false ELSE abap_true ) )
 
-  IF v_stavei IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | status = '{ v_stavei }' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | status = '{ v_stavei }' AND |
+      exist = COND #( WHEN v_stavei IS INITIAL
+                    THEN abap_false ELSE abap_true ) )
+  ).
 
-  lv_len = strlen( lv_where_clause ).
-
-  IF lv_len > 0.
-    TRY.
-        " Remover última AND, se existir
-        lv_where_clause = substring_before( val = lv_where_clause  sub = ' AND' occ = lv_count ).
-
-      CATCH cx_sy_range_out_of_bounds.
-        MESSAGE: 'CX_SY_RANGE_OUT_OF_BOUNDS' TYPE 'E'.
-
-      CATCH cx_sy_strg_par_val.
-        MESSAGE: 'CX_SY_STRG_PAR_VAL' TYPE 'E'.
-
-      CATCH cx_sy_regex_too_complex.
-        MESSAGE: 'CX_SY_REGEX_TOO_COMPLEX' TYPE 'E'.
-
-    ENDTRY.
-  ENDIF.
+  " Gerar query dinâmica
+  CALL FUNCTION 'ZBUILD_DYNAMIC_QUERY'
+    EXPORTING
+      it_table = lt_where_clause
+    IMPORTING
+      query    = lv_where_clause.
 
   TRY.
-      IF lv_where_clause IS NOT INITIAL. " Query dinâmica
+      IF lv_where_clause IS NOT INITIAL.
         SELECT *
           FROM ztveiculos
           INTO TABLE t_ztveiculos_aux
             WHERE (lv_where_clause)
           ORDER BY marca.
-      ELSE.                               " Todos registros
+      ELSE.
         SELECT *
           FROM ztveiculos
           INTO TABLE t_ztveiculos_aux
@@ -242,6 +213,9 @@ FORM f_select_veiculo_data .
 
     CATCH cx_sy_dynamic_osql_syntax.
       MESSAGE: 'CX_SY_DYNAMIC_OSQL_SYNTAX' TYPE 'E'.
+
+    CATCH cx_sy_open_sql_db.
+      MESSAGE: 'CX_SY_OPEN_SQL_D' TYPE 'E'.
 
     CATCH cx_sy_dynamic_osql_semantics.
       MESSAGE: 'CX_SY_DYNAMIC_OSQL_SEMANTICS' TYPE 'E'.
@@ -257,46 +231,32 @@ FORM f_select_motorista_data .
 
   FREE: t_ztmotoristas_aux.
 
-  DATA: lv_where_clause TYPE string,
-        lv_count        TYPE i VALUE 0,
-        lv_len          TYPE i VALUE 0.
+  DATA: lt_where_clause TYPE TABLE OF zstructure_query,
+        lv_where_clause TYPE string.
 
-  IF v_nome IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | nome LIKE '{ v_nome }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+  lt_where_clause = VALUE #(
+    ( clause = | nome LIKE '{ v_nome }%' AND |
+      exist = COND #( WHEN v_nome IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_cpf IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | cpf LIKE '{ v_cpf }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | cpf LIKE '{ v_cpf }%' AND |
+      exist = COND #( WHEN v_cpf IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_cnh IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | cnh LIKE '{ v_cnh }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | cnh LIKE '{ v_cnh }%' AND |
+      exist = COND #( WHEN v_cnh IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_stamot IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | status = '{ v_stamot }' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | status = '{ v_stamot }' AND |
+      exist = COND #( WHEN v_stamot IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
+  ).
 
-  lv_len = strlen( lv_where_clause ).
-
-  IF lv_len > 0.
-    TRY.
-        lv_where_clause = substring_before( val = lv_where_clause sub = ` AND` occ = lv_count ).
-
-      CATCH cx_sy_range_out_of_bounds.
-        MESSAGE: 'CX_SY_RANGE_OUT_OF_BOUNDS' TYPE 'E'.
-
-      CATCH cx_sy_strg_par_val.
-        MESSAGE: 'CX_SY_STRG_PAR_VAL' TYPE 'E'.
-
-      CATCH cx_sy_regex_too_complex.
-        MESSAGE: 'CX_SY_REGEX_TOO_COMPLEX' TYPE 'E'.
-    ENDTRY.
-  ENDIF.
+  CALL FUNCTION 'ZBUILD_DYNAMIC_QUERY'
+    EXPORTING
+      it_table = lt_where_clause
+    IMPORTING
+      query    = lv_where_clause.
 
   TRY.
       IF lv_where_clause IS NOT INITIAL.
@@ -309,8 +269,15 @@ FORM f_select_motorista_data .
             INTO TABLE t_ztmotoristas_aux
             ORDER BY nome.
       ENDIF.
+
     CATCH cx_sy_dynamic_osql_syntax.
       MESSAGE: 'CX_SY_DYNAMIC_OSQL_SYNTAX' TYPE 'E'.
+
+    CATCH cx_sy_open_sql_db.
+      MESSAGE: 'CX_SY_OPEN_SQL_D' TYPE 'E'.
+
+    CATCH cx_sy_dynamic_osql_semantics.
+      MESSAGE: 'CX_SY_DYNAMIC_OSQL_SEMANTICS' TYPE 'E'.
 
   ENDTRY.
 
@@ -323,79 +290,74 @@ FORM f_select_entrega_data .
 
   FREE: t_busca_entrega.
 
-  DATA: lv_where_clause TYPE string,
-        lv_count        TYPE i VALUE 0,
-        lv_len          TYPE i VALUE 0.
+  DATA: lt_where_clause TYPE TABLE OF zstructure_query,
+        lv_where_clause TYPE string.
 
-  IF v_nome IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | UPPER( m~nome ) LIKE '{ v_nome }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+  lt_where_clause = VALUE #(
+    ( clause = | UPPER( m~nome ) LIKE '{ v_nome }%' AND |
+      exist = COND #( WHEN v_nome IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_cpf IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | m~cpf LIKE '{ v_cpf }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | m~cpf LIKE '{ v_cpf }%' AND |
+      exist = COND #( WHEN v_cpf IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_cnh IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | m~cnh LIKE '{ v_cnh }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | m~cnh LIKE '{ v_cnh }%' AND |
+      exist = COND #( WHEN v_cnh IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_pais IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | r~pais LIKE '{ v_pais }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | r~pais LIKE '{ v_pais }%' AND |
+      exist = COND #( WHEN v_pais IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_orige IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | r~uf_origem LIKE '{ v_orige }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | r~uf_origem LIKE '{ v_orige }%' AND |
+      exist = COND #( WHEN v_orige IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_desti IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | r~uf_destino LIKE '{ v_desti }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | r~uf_destino LIKE '{ v_desti }%' AND |
+      exist = COND #( WHEN v_desti IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_placa IS NOT INITIAL.
-    lv_where_clause = lv_where_clause && | UPPER( v~placa ) LIKE '{ v_placa }%' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    ( clause = | UPPER( v~placa ) LIKE '{ v_placa }%' AND |
+      exist = COND #( WHEN v_placa IS INITIAL
+                      THEN abap_false ELSE abap_true ) )
 
-  IF v_semoc EQ abap_true.
-    lv_where_clause = lv_where_clause && | e~ocorrencia_id = '' AND |.
-    lv_count = lv_count + 1.
-  ENDIF.
+    " COALESCE: para tratar valores nulos / vazios
+    ( clause = | COALESCE( o~ocorrencia_id, ' ' ) = ' ' AND |
+      exist = COND #( WHEN v_semoc EQ abap_true
+                      THEN abap_true ELSE abap_false ) )
 
-  IF v_nofina EQ abap_true.
-    lv_where_clause = lv_where_clause && | NOT e~status = 'FINALIZADA' AND |.
-    lv_count = lv_count + 1.
+     ( clause = | NOT e~status = 'FINALIZADA' AND |
+       exist = COND #( WHEN v_nofina EQ abap_true
+                       THEN abap_true ELSE abap_false ) )
 
-  ELSE.
-    lv_where_clause = lv_where_clause && | e~status LIKE '{ v_staten }%' AND |.
-    lv_count = lv_count + 1.
+     ( clause = | e~status = '{ v_staten }' AND |
+       exist = COND #( WHEN v_staten IS INITIAL
+                       THEN abap_false ELSE abap_true ) )
+  ).
 
-  ENDIF.
-
-  lv_len = strlen( lv_where_clause ).
-
-  IF lv_len > 0.
-    TRY.
-        lv_where_clause = substring_before( val = lv_where_clause sub = ` AND` occ = lv_count ).
-
-      CATCH cx_sy_range_out_of_bounds.
-        MESSAGE: 'CX_SY_RANGE_OUT_OF_BOUNDS' TYPE 'E'.
-
-      CATCH cx_sy_strg_par_val.
-        MESSAGE: 'CX_SY_STRG_PAR_VAL' TYPE 'E'.
-
-      CATCH cx_sy_regex_too_complex.
-        MESSAGE: 'CX_SY_REGEX_TOO_COMPLEX' TYPE 'E'.
-    ENDTRY.
-  ENDIF.
+  CALL FUNCTION 'ZBUILD_DYNAMIC_QUERY'
+    EXPORTING
+      it_table = lt_where_clause
+    IMPORTING
+      query    = lv_where_clause.
 
   TRY.
-      IF lv_where_clause IS NOT INITIAL.
+      IF lv_where_clause IS NOT INITIAL.      " Com where
+        SELECT
+          e~entrega_id, m~nome, m~cpf, m~cnh,
+          r~pais, r~uf_origem, r~uf_destino,
+          v~placa, e~status, o~ocorrencia_id
+        FROM ztentregas AS e
+         INNER JOIN ztmotoristas AS m ON e~motorista_id = m~motorista_id
+         INNER JOIN ztveiculos AS v ON e~veiculo_id = v~veiculo_id
+         INNER JOIN ztrotas AS r ON e~rota_id = r~rota_id
+         LEFT JOIN ztocorrencias AS o ON e~entrega_id = o~entrega_id
+        WHERE (lv_where_clause)
+        ORDER BY e~entrega_id
+        INTO TABLE @t_busca_entrega.
+
+      ELSE.                                   " Sem where
         SELECT
           e~entrega_id, m~nome, m~cpf, m~cnh,
           r~pais, r~uf_origem, r~uf_destino,
@@ -416,6 +378,9 @@ FORM f_select_entrega_data .
 
     CATCH cx_sy_open_sql_db.
       MESSAGE: 'CX_SY_OPEN_SQL_D' TYPE 'E'.
+
+    CATCH cx_sy_dynamic_osql_semantics.
+      MESSAGE: 'CX_SY_DYNAMIC_OSQL_SEMANTICS' TYPE 'E'.
 
   ENDTRY.
 

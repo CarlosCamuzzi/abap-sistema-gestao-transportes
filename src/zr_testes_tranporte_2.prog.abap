@@ -173,7 +173,7 @@ REPORT zr_testes_tranporte_2.
 *  ENDTRY.
 
 
-  "FREE: lv_cast, lv_length.
+"FREE: lv_cast, lv_length.
 
 **********************************************************************
 
@@ -213,5 +213,51 @@ REPORT zr_testes_tranporte_2.
 **********************************************************************
 
 START-OF-SELECTION.
-"delete from ztentregas.
-delete from ztocorrencias.
+  "delete from ztentregas.
+*delete from ztocorrencias.
+
+*  SELECT * FROM ztentregas
+*    INTO TABLE @DATA(lt_entregas).
+*
+*  cl_demo_output=>write_data( lt_entregas ).
+*  cl_demo_output=>display(  ).
+*
+
+  TYPES: BEGIN OF ty_busca,
+           entrega_id    TYPE ztentregas-entrega_id,
+           ocorrencia_id TYPE ztocorrencias-ocorrencia_id,
+           descricao     TYPE ztocorrencias-descricao,
+         END OF ty_busca.
+
+  DATA: lt_busca TYPE TABLE OF ty_busca.
+
+  " Somente entregas com ocorrencia
+*  SELECT e~entrega_id,
+*         o~ocorrencia_id,
+*         o~descricao
+*  FROM ztocorrencias AS o
+*    INNER JOIN ztentregas AS e
+*      ON e~entrega_id = o~entrega_id
+*     INTO TABLE @lt_busca.
+
+  " Entregas com ou sem ocorrência
+*  SELECT e~entrega_id,
+*         o~ocorrencia_id,
+*         o~descricao
+*  FROM ztocorrencias AS o
+*   RIGHT JOIN ztentregas AS e
+*    ON e~entrega_id = o~entrega_id
+*    INTO TABLE @lt_busca.
+
+  SELECT e~entrega_id,
+         o~ocorrencia_id,
+         o~descricao
+  FROM ztocorrencias AS o
+    RIGHT JOIN ztentregas AS e
+      ON e~entrega_id = o~entrega_id
+     "WHERE o~ocorrencia_id IS NULL
+    where COALESCE( o~ocorrencia_id, ' ' ) = ' '
+    INTO TABLE @lt_busca.
+
+  cl_demo_output=>write_data( lt_busca ).
+  cl_demo_output=>display(  ).

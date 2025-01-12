@@ -24,6 +24,7 @@ FUNCTION zbuild_dynamic_query.
   IF strlen( query ) > 0.
     TRY.
         query = substring_before( val = query sub = ` AND` occ = lv_lines ).
+        query = condense( val =  query ).
 
       CATCH cx_sy_range_out_of_bounds.
         MESSAGE: 'CX_SY_RANGE_OUT_OF_BOUNDS' TYPE 'E'.
