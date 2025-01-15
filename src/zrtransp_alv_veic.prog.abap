@@ -16,7 +16,7 @@ DATA: lt_ztveiculos TYPE TABLE OF ztveiculos,
       lt_saida      TYPE TABLE OF zstruc_veic_rota,    " Estrutura para FIELDCAT
       lt_fieldcat   TYPE slis_t_fieldcat_alv,          " Características das colunas
       lt_sort       TYPE slis_t_sortinfo_alv,          " Ordenação do relatório
-      t_header      TYPE slis_t_listheader.            " Cabeçalho do relatório
+      lt_header     TYPE slis_t_listheader.            " Cabeçalho do relatório
 
 DATA: wa_ztveiculos TYPE ztveiculos,
       wa_ztrotas    TYPE ztrotas,
@@ -39,7 +39,7 @@ SELECTION-SCREEN END OF BLOCK b01.
 
 START-OF-SELECTION.
   PERFORM f_select_data.
-*  PERFORM f_table_saida.
+  PERFORM f_table_data.
 *  PERFORM f_alv.
 
 *&---------------------------------------------------------------------*
@@ -47,21 +47,20 @@ START-OF-SELECTION.
 *&---------------------------------------------------------------------*
 FORM f_select_data .
 
-  " Somente date
-  " Criar query dinâmica
-  SELECT * FROM ztentregas
-    INTO TABLE lt_ztentregas
-    WHERE data_entrega IN s_date.
+  SELECT * FROM ztveiculos
+      INTO TABLE @lt_ztveiculos
+      WHERE placa = @p_placa
+         AND veiculo_id IN @s_id.
 
   IF sy-subrc EQ 0.
+    SELECT * FROM ztentregas
+      INTO TABLE lt_ztentregas
+      FOR ALL ENTRIES IN lt_ztveiculos
+      WHERE veiculo_id = lt_ztveiculos-veiculo_id
+        AND data_entrega IN s_date.
 
-    SELECT * FROM ztveiculos
-      INTO TABLE lt_ztveiculos
-      FOR ALL ENTRIES IN lt_ztentregas
-      WHERE veiculo_id = lt_ztentregas-veiculo_id.
 
     IF sy-subrc EQ 0.
-
       SELECT * FROM ztrotas
         INTO TABLE lt_ztrotas
         FOR ALL ENTRIES IN lt_ztentregas
@@ -73,5 +72,20 @@ FORM f_select_data .
     MESSAGE 'Nenhum registro encontrado' TYPE 'I'.
 
   ENDIF.
+
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*& Form f_table_data
+*&---------------------------------------------------------------------*
+FORM f_table_data .
+
+  FIELD-SYMBOLS: <fs_line> TYPE ztentregas.
+
+
+
+  LOOP AT lt_ztentregas INTO <fs_line>.
+
+  ENDLOOP.
 
 ENDFORM.
