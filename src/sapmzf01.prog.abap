@@ -367,7 +367,6 @@ FORM f_select_entrega_data .
          INNER JOIN ztveiculos AS v ON e~veiculo_id = v~veiculo_id
          INNER JOIN ztrotas AS r ON e~rota_id = r~rota_id
          LEFT JOIN ztocorrencias AS o ON e~entrega_id = o~entrega_id
-        WHERE (lv_where_clause)
         ORDER BY e~entrega_id
         INTO TABLE @t_busca_entrega.
 
